@@ -1,17 +1,15 @@
 # DCEData
 大连商品交易所日行情数据爬取工具
 
-[Readme_en](README_en.md)
-
-# 如何使用
-## 帮助
+# Usage
+## Help
 ```shell script
 python main.py -h
 ```
 ```shell script
 python main.py --help
 ```
-- 内容如下：
+- Here is the help
 ```shell script
 --variety       -v
         默认：全部
@@ -20,30 +18,29 @@ python main.py --help
         默认：期货
         可选：期货 期权
 ```
-## 指定种类
+## Specify Variety
 ```shell script
 python main.py -v 棕榈油
 ```
 ```shell script
 python main.py --variety 棕榈油
 ```
-## 指定类别
+## Specify Type
 ```shell script
 python main.py -t 期权
 ```
 ```shell script
 python main.py --type 期权
 ```
-## 指定日期
+## Specify Date
 ```shell script
 python main.py 20210108
 ```
-## 指定日期范围
+## Specify Date Range
 ```shell script
 python main.py 20210104 20210108
 ```
-## 综合使用
-采集2021年1月4日至2021年1月8日的棕榈油期权交易数据
+## Multiple use
 Collect palm oil option transaction data from January 4, 2021 to January 8, 2021
 ```shell script
 python main.py -v 棕榈油 -t 期权 20210104 20210108

@@ -5,7 +5,7 @@
 
 # 使用exe for Windows10
 ## 直接使用
-- 双击自动爬取当日所有期货交易数据
+- 双击自动爬取当日所有期货交易数据 
 ## 帮助
 ```shell script
  ./main.exe -h

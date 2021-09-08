@@ -93,6 +93,63 @@ def get_daily(variety, trade_type, year="", month="", day=""):
     workbook.save("./data/" + name + ".xls")
 
 
+def get_in_one(variety, trade_type, start, end):
+    # 放在一个工作表里
+    workbook = xlwt.Workbook(encoding="utf-8-sig")
+    sheet = workbook.add_sheet(str(start) + "_" + str(end))
+    print("writing xml:" + str(start) + "_" + str(end) + ".xls")
+    row = 0
+    for d in gen_dates(start, (end - start).days):
+        year = str(d.year)
+        month = str(d.month - 1)
+        day = str(d.day)
+        data = {
+            "dayQuotes.variety": variety,
+            "dayQuotes.trade_type": trade_type,
+            "year": year,
+            "month": month,
+            "day": day
+        }
+        print("requesting: " + year + "." + month + "." + day + "_" + variety)
+        pageRequest = requests.post("http://www.dce.com.cn/publicweb/quotesdata/dayQuotesCh.html", data=data)
+        pageRequest.encoding = pageRequest.apparent_encoding
+
+        if pageRequest.status_code != 200:
+            print("error while get html (code:" + str(pageRequest.status_code) + ")")
+            continue
+
+        date = pageRequest.text[pageRequest.text.index("日期") + 3:pageRequest.text.index("日期") + 11]
+        # print("查询日期：" + date)
+        if "暂无数据" in pageRequest.text:
+            print(date + ": 暂无数据")
+            continue
+
+        html = etree.HTML(pageRequest.text)
+        data = html.xpath("//div[@class='dataArea']/table/tr")
+        # print("data:  " + str(data))
+
+        name = date + "_" + vVarietyDict[variety] + "_" + str(trade_type)
+        for tr in data:
+            col = 0
+            head = tr.xpath(".//th/text()")
+            data = tr.xpath(".//td/text()")
+            if len(head) > 0:
+                for th in head:
+                    sheet.write(row, col, th)
+                    col = col + 1
+                    # print(th, end="\t")
+            else:
+                for td in data:
+                    sheet.write(row, col, td)
+                    col = col + 1
+                    # print(td.strip(), end="\t")
+            # print("")
+            row = row + 1
+    if not os.path.exists("./data"):
+        os.makedirs("./data")
+    workbook.save("./data/" + str(start) + "_" + str(end) + ".xls")
+
+
 def gen_dates(b_date, days):
     day = timedelta(days=1)
     for i in range(days):
@@ -102,7 +159,8 @@ def gen_dates(b_date, days):
 if __name__ == "__main__":
     inputVariety = "all"
     inputType = 0
-    opts, args = getopt.getopt(sys.argv[1:], "hv:t:", ["help", "variety=", "type="])
+    inone = False
+    opts, args = getopt.getopt(sys.argv[1:], "hv:t:", ["help", "variety=", "type=", "one"])
     for opts, arg in opts:
         if opts == "-h" or opts == "--help":
             print("--variety\t-v\n"
@@ -120,6 +178,8 @@ if __name__ == "__main__":
                 print(arg + "不在可选项列表中")
                 exit(0)
             inputType = tradeTypeDict[arg]
+        elif opts == "--one":
+            inone = True
 
     if len(args) == 0:
         get_daily(inputVariety, inputType)
@@ -144,5 +204,8 @@ if __name__ == "__main__":
         except:
             print("日期格式出错：" + args[1])
             exit(0)
-        for d in gen_dates(startTime.date(), (endTime.date() - startTime.date()).days):
-            get_daily(inputVariety, inputType, str(d.year), str(d.month - 1), str(d.day))
+        if inone:
+            get_in_one(inputVariety, inputType, startTime.date(), endTime.date())
+        else:
+            for d in gen_dates(startTime.date(), (endTime.date() - startTime.date()).days):
+                get_daily(inputVariety, inputType, str(d.year), str(d.month - 1), str(d.day))

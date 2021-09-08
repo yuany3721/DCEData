@@ -45,6 +45,11 @@
 ```shell script
  ./main.exe 20210104 20210108
 ```
+- 放在同一个excel中
+```shell script
+ ./main.exe --one 20210104 20210108
+```
+- ***注意：*** `--one`需要放在日期范围之前
 ## 综合使用
 采集2021年1月4日至2021年1月8日的棕榈油期权交易数据
 ```shell script
@@ -91,6 +96,11 @@ python main.py 20210108
 ```shell script
 python main.py 20210104 20210108
 ```
+- 放在同一个excel中
+```shell script
+python main.py --one 20210104 20210108
+```
+- ***注意：*** `--one`需要放在日期范围之前
 ## 综合使用
 采集2021年1月4日至2021年1月8日的棕榈油期权交易数据
 ```shell script

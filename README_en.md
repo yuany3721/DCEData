@@ -40,6 +40,11 @@ python main.py 20210108
 ```shell script
 python main.py 20210104 20210108
 ```
+- put in a single excel
+```shell script
+python main.py --one 20210104 20210108
+```
+- ***WARNING：*** `--one`should be placed in front of date range
 ## Multiple use
 Collect palm oil option transaction data from January 4, 2021 to January 8, 2021
 ```shell script

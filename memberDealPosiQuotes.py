@@ -39,26 +39,6 @@ tradeTypeDict = {
     "期货": 0,
     "期权": 1
 }
-contractDict = {
-    "a": ["a2105"],
-    "b": ["b2102", "b2103"],
-    "c": ["c2103", "c2105", "c2107", "c2109", "c2111"],
-    "cs": ["cs2103", "cs2105", "cs2107"],
-    "eb": ["eb2102", "eb2103", "eb2105"],
-    "eg": ["eg2103", "eg2105"],
-    "i": ["i2102", "i2103", "i2104", "i2105", "i2109"],
-    "j": ["j2105"],
-    "jd": ["jd2102", "jd2103", "jd2104", "jd2105", "jd2106", "jd2107", "jd2108", "jd2109"],
-    "jm": ["jm2103", "jm2105"],
-    "l": ["l2102", "l2105"],
-    "m": ["m2103", "m2105", "m2107", "m2108", "m2109"],
-    "p": ["p2102", "p2103", "p2105", "p2109"],
-    "pg": ["pg2102", "pg2103"],
-    "pp": ["pp2103", "pp2105"],
-    "rr": ["rr2102", "rr2103"],
-    "v": ["v2101", "v2103", "v2105"],
-    "y": ["y2103", "y2105", "y2107", "y2109"]
-}
 matcher = re.compile(r"^-?\d+(\.\d+)?$")
 
 
@@ -69,7 +49,7 @@ def get_daily(variety, trade_type, year="", month="", day=""):
         "year": year,
         "month": month,
         "day": day,
-        "contract.contract_id": input("请选择合约" + str(contractDict[variety]) + "："),
+        "contract.contract_id": "all",
         "contract.variety_id": variety,
         "contract": ""
     }
@@ -121,7 +101,6 @@ def get_in_one(variety, trade_type, start, end):
     # 放在一个工作表里
     workbook = xlwt.Workbook(encoding="utf-8-sig")
     sheet = workbook.add_sheet(str(start) + "_" + str(end))
-    contract = input("请选择合约" + str(contractDict[variety]) + "：")
     print("writing xml:" + str(start) + "_" + str(end) + ".xls")
     row = 0
     for d in gen_dates(start, (end - start).days):
@@ -134,7 +113,7 @@ def get_in_one(variety, trade_type, start, end):
             "year": year,
             "month": month,
             "day": day,
-            "contract.contract_id": contract,
+            "contract.contract_id": "all",
             "contract.variety_id": variety,
             "contract": ""
         }

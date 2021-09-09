@@ -8,7 +8,7 @@ import xlwt
 import os
 import getopt
 import sys
-import time
+import re
 
 varietyDict = {
     "全部": "all",
@@ -39,6 +39,7 @@ tradeTypeDict = {
     "期货": 0,
     "期权": 1
 }
+matcher = re.compile(r"^-?\d+(\.\d+)?$")
 
 
 def get_daily(variety, trade_type, year="", month="", day=""):
@@ -78,14 +79,13 @@ def get_daily(variety, trade_type, year="", month="", day=""):
         data = tr.xpath(".//td/text()")
         if len(head) > 0:
             for th in head:
-                sheet.write(row, col, th)
+                sheet.write(row, col, th.strip())
                 col = col + 1
                 # print(th, end="\t")
         else:
             for td in data:
-                sheet.write(row, col, td)
+                sheet.write(row, col, float(td.strip()) if matcher.match(td.strip()) else td.strip())
                 col = col + 1
-                # print(td.strip(), end="\t")
         # print("")
         row = row + 1
     if not os.path.exists("./data"):
@@ -135,12 +135,12 @@ def get_in_one(variety, trade_type, start, end):
             data = tr.xpath(".//td/text()")
             if len(head) > 0:
                 for th in head:
-                    sheet.write(row, col, th)
+                    sheet.write(row, col, th.strip())
                     col = col + 1
                     # print(th, end="\t")
             else:
                 for td in data:
-                    sheet.write(row, col, td)
+                    sheet.write(row, col,  float(td.strip()) if matcher.match(td.strip()) else td.strip())
                     col = col + 1
                     # print(td.strip(), end="\t")
             # print("")
